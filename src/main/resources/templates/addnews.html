@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Новости</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #e0e0e0;
+            color: #333;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            margin-top: 80px;
+        }
+
+        h1 {
+            color: #d5006d;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .news-item {
+            border-bottom: 1px solid #ddd;
+            padding: 15px 0;
+        }
+
+        .news-item h3 {
+            color: #0077b6;
+            margin-bottom: 10px;
+        }
+
+        .news-item p {
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .comment-section {
+            margin-top: 15px;
+        }
+
+        .comment-section h4 {
+            color: #d5006d;
+            margin-bottom: 10px;
+        }
+
+        .comment {
+            margin-top: 10px;
+            padding: 10px;
+            border-left: 3px solid #ffb6c1;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+
+        .form-container {
+            margin-top: 20px;
+        }
+
+        .form-container input, .form-container textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .form-container button {
+            width: 100%;
+            padding: 10px;
+            background: #ff69b4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .form-container button:hover {
+            background: #d5006d;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Добавить новость</h1>
+
+    <div class="form-container">
+        <h2>Добавить новость</h2>
+        <form th:action="@{/news}" method="post">
+
+            <label for="title">Заголовок</label>
+            <input type="text" id="title" name="title" required>
+
+            <label for="brief">Краткое содержиание</label>
+            <input type="text" id="brief" name="brief" required>
+
+
+            <label for="text">Краткое содержиание</label>
+            <input type="text" id="text" name="text" required>
+
+            <button type="submit">Добавить</button>
+        </form>
+    </div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
