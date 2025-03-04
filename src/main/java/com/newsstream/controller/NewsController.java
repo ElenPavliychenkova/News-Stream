@@ -25,10 +25,12 @@ public class NewsController {
     private final ICommentsService commentsService;
 
     @GetMapping
-    public String newsPage(Model model) {
+    public String newsPage(Model model, @RequestParam(name = "show_comment_news_id", required = false) Integer showCommentNewsId) {
 
         List<News> news = newsService.getAll();
         model.addAttribute("newsList", news);
+        model.addAttribute("show_comment_news_id", showCommentNewsId);
+        log.info("render news page with {}", showCommentNewsId);
         return "news";
     }
 

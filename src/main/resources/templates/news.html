@@ -70,30 +70,86 @@
             margin-top: 20px;
         }
 
-        .add-news-button {
-            display: block;
-            width: 100%;
-            text-align: center;
+        .news-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .news-card h3 {
+            margin-top: 0;
+            color: #ff1493;
+        }
+
+        .news-card p {
+            color: #555;
+        }
+
+        .comments-section {
             margin-top: 20px;
-            padding: 12px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        .comment-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #fff;
+            border-radius: 6px;
+            border: 1px solid #eee;
+        }
+
+        .comment-item p {
+            margin: 0;
+            color: #333;
+        }
+
+        .comment-item small {
+            color: #888;
+        }
+
+        .add-comment-form {
+            margin-top: 20px;
+        }
+
+        .add-comment-form textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .add-comment-form button {
+            margin-top: 10px;
+            padding: 10px 20px;
             background-color: #ff69b4;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 16px;
             transition: background-color 0.3s;
-            text-decoration: none;
         }
 
-        .add-news-button:hover {
+        .add-comment-form button:hover {
             background-color: #ff1493;
         }
 
         .news-actions {
             display: flex;
             gap: 10px;
-            margin-top: 10px;
+            margin-top: 20px;
         }
 
         .news-actions a, .news-actions button {
@@ -124,6 +180,26 @@
 
         .news-actions .delete-button:hover {
             background-color: #e53935;
+        }
+
+        .add-news-button {
+            display: block;
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+            padding: 12px;
+            background-color: #ff69b4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            text-decoration: none;
+        }
+
+        .add-news-button:hover {
+            background-color: #ff1493;
         }
 
         footer {
@@ -163,29 +239,14 @@
     <div class="news-section">
         <h2>Новости</h2>
 
-        <div th:each="news : ${newsList}" class="news-item">
+        <div th:each="news : ${newsList}" class="news-card">
             <h3 th:text="${news.title}">Заголовок новости</h3>
             <p th:text="${news.brief}">Краткое описание новости.</p>
             <div th:utext="${news.text}">Краткое описание новости.</div>
 
-            <div class="comments-section">
-                <h4>Комментарии</h4>
-                <div th:each="comment : ${news.comments}" class="comment-item">
-                    <p th:text="${comment.text}">Текс комментария</p>
-                    <small>Автор: <span th:text="${comment.author.username}">Имя автора</span></small>
-                </div>
-            </div>
-
             <div th:if="${session.user != null}">
-                <h3>Добавить комментарий</h3>
-                <form th:action="@{/news/{newsId}/comment(newsId=${news.id})}" method="post">
-                    <textarea name="text" placeholder="Введите ваш комментарий" required></textarea>
-                    <button type="submit">Отправить</button>
-                </form>
-
                 <div th:if="${(session.user != null && session.user.id == news.author.id) || session.role == 'ADMIN'}"
                      class="news-actions">
-
                     <a th:href="@{/news/editnews/{id}(id=${news.id})}" class="edit-button">Редактировать новость</a>
                     <form action th:action="@{/news/delete/{id}(id=${news.id})}" method="post">
                         <button type="submit" class="delete-button">Удалить новость</button>
@@ -193,6 +254,33 @@
                 </div>
             </div>
 
+            <!-- комменты -->
+            <div th:if="${show_comment_news_id == news.id}">
+                <div th:if="${news.comments.size > 0}" class="comments-section">
+                    <h4>Комментарии</h4>
+                    <div th:each="comment : ${news.comments}" class="comment-item">
+                        <p th:text="${comment.text}">Текс комментария</p>
+                        <small>Автор: <span th:text="${comment.author.username}">Имя автора</span></small>
+                        <div th:if="${(session.user != null && session.user.id == comment.author.id) || session.role == 'ADMIN'}">
+                            <form th:action="@{/comments/delete/{commentId}(commentId=${comment.id})}" method="post">
+                                <button type="submit">удОлить</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${session.user != null}" class="add-comment-form">
+                    <h3>Добавить комментарий</h3>
+                    <form th:action="@{/news/{newsId}/comment(newsId=${news.id})}" method="post">
+                        <textarea name="text" placeholder="Введите ваш комментарий" required></textarea>
+                        <button type="submit">Отправить</button>
+                    </form>
+                </div>
+            </div>
+            <form th:action="@{/news}" method="get">
+                <input hidden th:value="${news.id}" th:name="show_comment_news_id">
+                <button type="submit">Комментарии</button>
+            </form>
         </div>
         <a th:if="${session.user != null}" class="add-news-button" th:href="@{/news/add-news}">Добавить новость !!!</a>
     </div>
@@ -200,5 +288,6 @@
     <footer>
         <p>&copy; 2023 News-Stream. Все права защищены. <a href="/privacy">Политика конфиденциальности</a></p>
     </footer>
+</div>
 </body>
 </html>
