@@ -3,6 +3,7 @@ package com.newsstream.controller;
 import com.newsstream.model.entity.news.News;
 import com.newsstream.model.entity.user.User;
 import com.newsstream.model.requests.CreateNewsRequest;
+import com.newsstream.service.comments.ICommentsService;
 import com.newsstream.service.news.INewsService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +22,13 @@ import java.util.List;
 public class NewsController {
 
     private final INewsService newsService;
+    private final ICommentsService commentsService;
 
     @GetMapping
-    public String newsPage(@RequestParam(defaultValue = "0") int page, Model model) {
-        int pageSize = 5;
-        List<News> newsList = newsService.getNews(page, pageSize);
-        model.addAttribute("newsList", newsList);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPage", newsService.getTotalPages(pageSize));
+    public String newsPage(Model model) {
+
+        List<News> news = newsService.getAll();
+        model.addAttribute("newsList", news);
         return "news";
     }
 
@@ -62,7 +62,7 @@ public class NewsController {
         return "editnews";
     }
 
-    @PostMapping ("/editnews/{id}")
+    @PostMapping("/editnews/{id}")
     public String editNews(@PathVariable Integer id, @ModelAttribute News news) {
         newsService.updateNews(id, news);
         return "redirect:/news";
@@ -74,4 +74,9 @@ public class NewsController {
         return "redirect:/news";
     }
 
+    @PostMapping("/{newsId}/comment")
+    public String addComment(@PathVariable Integer newsId, @RequestParam String text) {
+        commentsService.save(newsId, text);
+        return "redirect:/news";
+    }
 }

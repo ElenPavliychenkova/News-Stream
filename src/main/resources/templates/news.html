@@ -162,28 +162,43 @@
 
     <div class="news-section">
         <h2>Новости</h2>
+
         <div th:each="news : ${newsList}" class="news-item">
             <h3 th:text="${news.title}">Заголовок новости</h3>
             <p th:text="${news.brief}">Краткое описание новости.</p>
             <div th:utext="${news.text}">Краткое описание новости.</div>
 
-
-            <div th:if="${(session.user != null && session.user.id == news.author.id) || session.role == 'ADMIN'}" class="news-actions">
-
-                <a th:href="@{/news/editnews/{id}(id=${news.id})}" class="edit-button">Редактировать</a>
-                <form action th:action="@{/news/delete/{id}(id=${news.id})}" method="post">
-                    <button type="submit" class="delete-button">Удалить</button>
-                </form>
+            <div class="comments-section">
+                <h4>Комментарии</h4>
+                <div th:each="comment : ${news.comments}" class="comment-item">
+                    <p th:text="${comment.text}">Текс комментария</p>
+                    <small>Автор: <span th:text="${comment.author.username}">Имя автора</span></small>
+                </div>
             </div>
 
+            <div th:if="${session.user != null}">
+                <h3>Добавить комментарий</h3>
+                <form th:action="@{/news/{newsId}/comment(newsId=${news.id})}" method="post">
+                    <textarea name="text" placeholder="Введите ваш комментарий" required></textarea>
+                    <button type="submit">Отправить</button>
+                </form>
+
+                <div th:if="${(session.user != null && session.user.id == news.author.id) || session.role == 'ADMIN'}"
+                     class="news-actions">
+
+                    <a th:href="@{/news/editnews/{id}(id=${news.id})}" class="edit-button">Редактировать новость</a>
+                    <form action th:action="@{/news/delete/{id}(id=${news.id})}" method="post">
+                        <button type="submit" class="delete-button">Удалить новость</button>
+                    </form>
+                </div>
+            </div>
 
         </div>
+        <a th:if="${session.user != null}" class="add-news-button" th:href="@{/news/add-news}">Добавить новость !!!</a>
     </div>
-    <a th:if="${session.user != null}" class="add-news-button" th:href="@{/news/add-news}">Добавить новость !!!</a>
-</div>
 
-<footer>
-    <p>&copy; 2023 News-Stream. Все права защищены. <a href="/privacy">Политика конфиденциальности</a></p>
-</footer>
+    <footer>
+        <p>&copy; 2023 News-Stream. Все права защищены. <a href="/privacy">Политика конфиденциальности</a></p>
+    </footer>
 </body>
 </html>

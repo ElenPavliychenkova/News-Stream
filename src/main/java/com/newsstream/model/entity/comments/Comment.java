@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -23,13 +24,15 @@ public class Comment {
     @Column
     @NotNull
     @Size(min = 1, max = 500)
-    private String content;
+    private String text;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "news_id", referencedColumnName = "id", nullable = false)
+    @ToString.Exclude
+    @ManyToOne
+    @JoinColumn(name = "news_id", nullable = false)
     private News news;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", referencedColumnName = "id", nullable = false)
     private User author;
+
 }
