@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ControllerExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    public String doSmth(Exception e) {
+    public String handleException(Exception e) {
 
         return e.getMessage();
     }

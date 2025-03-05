@@ -5,8 +5,8 @@
     <title>Вход</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
             color: #333;
             margin: 0;
             display: flex;
@@ -14,10 +14,11 @@
             align-items: center;
             min-height: 100vh;
         }
+
         .top-border {
             width: 100%;
             height: 60px;
-            background: linear-gradient(to bottom, #ffb6c1 50%, #ff69b4 50%);
+            background: linear-gradient(to bottom, #556B2F, #6B8E23);
             position: fixed;
             top: 0;
             left: 0;
@@ -30,6 +31,7 @@
             color: white;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
         }
+
         .container {
             max-width: 400px;
             background-color: #fff;
@@ -38,16 +40,20 @@
             padding: 20px;
             margin-top: 80px;
         }
+
         h1 {
-            color: #d5006d;
+            color: #556B2F;
             text-align: center;
             margin-bottom: 20px;
         }
+
         label {
             display: block;
             margin: 10px 0 5px;
             font-weight: bold;
+            color: #556B2F;
         }
+
         input[type="text"],
         input[type="password"] {
             width: 100%;
@@ -56,37 +62,51 @@
             border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 1rem;
+            transition: border-color 0.3s;
         }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #6B8E23;
+            outline: none;
+        }
+
         button {
             width: 100%;
             padding: 10px;
-            background-color: #ffb6c1;
+            background-color: #6B8E23;
             color: white;
             border: none;
             border-radius: 4px;
             font-size: 1rem;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background-color 0.3s;
         }
+
         button:hover {
-            background-color: #ff69b4;
+            background-color: #556B2F;
         }
+
         .error {
-            color: red;
+            color: #8B0000;
             text-align: center;
             margin-bottom: 10px;
         }
+
         .register-link {
             text-align: center;
             margin-top: 10px;
         }
+
         .register-link a {
-            color: #d5006d;
+            color: #6B8E23;
             text-decoration: none;
             font-weight: bold;
         }
+
         .register-link a:hover {
             text-decoration: underline;
+            color: #556B2F;
         }
     </style>
 </head>
@@ -95,7 +115,7 @@
     News-Stream
 </div>
 
-<div class="form-container">
+<div class="container">
     <h1>Авторизация</h1>
     <form th:action="@{/auth}" method="post" enctype="application/x-www-form-urlencoded">
         <label for="username">Имя пользователя</label>
@@ -106,7 +126,9 @@
 
         <button type="submit">Войти</button>
     </form>
-    <p>Еще нет аккаунта? <a href="/auth/registration">Зарегистрироваться</a></p>
+    <div class="register-link">
+        <p>Еще нет аккаунта? <a href="/auth/registration">Зарегистрироваться</a></p>
+    </div>
 </div>
 </body>
 </html>

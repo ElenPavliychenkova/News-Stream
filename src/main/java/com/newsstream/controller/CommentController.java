@@ -18,12 +18,14 @@ public class CommentController {
 
     @PostMapping("/delete/{id}")
     public String deleteCommentById(@PathVariable Integer id) {
+
         commentsService.delete(id);
         return "redirect:/news";
     }
 
     @GetMapping("/editcomment/{id}")
     public String editCommentPage(@PathVariable Integer id, Model model) {
+
         Comment comment = commentsService.getCommentById(id);
         model.addAttribute("comment", comment);
         return "editcomment";
@@ -31,6 +33,7 @@ public class CommentController {
 
     @PostMapping("/editcomment/{id}")
     public String editComment(@PathVariable Integer id, @ModelAttribute Comment comment) {
+
         commentsService.updateComment(id, comment);
         return "redirect:/news";
     }

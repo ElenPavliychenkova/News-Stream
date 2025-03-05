@@ -4,10 +4,7 @@ import com.newsstream.model.entity.news.News;
 import com.newsstream.model.requests.CreateNewsRequest;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
-
 public interface INewsService {
-    List<News> getAll();
 
     Page<News> getAllPageable(Integer page, Integer size);
 

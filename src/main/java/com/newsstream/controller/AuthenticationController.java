@@ -33,7 +33,6 @@ public class AuthenticationController {
         log.info("GET /registration (page)");
         List<Role> roles = authService.getAllRolesNames();
         model.addAttribute("roles", roles);
-
         log.info("GET /registration (page) roles {}", roles);
 
         return "registration";
@@ -48,7 +47,8 @@ public class AuthenticationController {
     @PostMapping(
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
     )
-    public String login(@Valid @ModelAttribute AuthenticationRequest authenticationRequest, Model model, HttpServletRequest request) {
+    public String login(@Valid @ModelAttribute AuthenticationRequest authenticationRequest,
+                        HttpServletRequest request) {
 
         log.info("Authenticating user: {}", authenticationRequest.getUsername());
         User user = authService.authenticate(authenticationRequest);
@@ -62,17 +62,14 @@ public class AuthenticationController {
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
     )
     public String registration(@Valid @ModelAttribute RegistrationRequest request,
-//                               BindingResult bindingResult,
                                Model model) {
-//        if (bindingResult.hasErrors()) {
-//            return "registration";
-//        }
 
         try {
             User savedUser = authService.registration(request);
             model.addAttribute("user", savedUser);
             return "redirect:/auth";
         } catch (Exception e) {
+            log.error(e.getMessage());
             model.addAttribute("error", e.getMessage());
             return "error";
         }
@@ -80,6 +77,7 @@ public class AuthenticationController {
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request) {
+
         request.getSession().invalidate();
         return "redirect:/news";
     }

@@ -14,7 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -22,14 +21,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class NewsService implements INewsService {
 
-
     private final INewsRepository iNewsRepository;
-
-
-    @Override
-    public List<News> getAll() {
-        return iNewsRepository.findAll();
-    }
 
     @Override
     public Page<News> getAllPageable(Integer page, Integer size) {

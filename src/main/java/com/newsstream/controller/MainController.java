@@ -17,4 +17,10 @@ public class MainController {
         return "redirect:/news";
     }
 
+    @GetMapping("/main")
+    public String main() {
+
+        return "main";
+    }
+
 }

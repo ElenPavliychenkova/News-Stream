@@ -40,6 +40,7 @@ public class NewsController {
 
     @GetMapping("/add-news")
     public String addNewsPage() {
+
         log.info("add news redirect");
         return "addnews";
     }
@@ -47,12 +48,14 @@ public class NewsController {
     @PostMapping(
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String addNews(@ModelAttribute CreateNewsRequest createNewsRequest) {
+
         newsService.save(createNewsRequest);
         return "redirect:/news";
     }
 
     @GetMapping("/editnews/{id}")
     public String editNewsPage(@PathVariable Integer id, Model model) {
+
         News news = newsService.getNewsById(id);
         model.addAttribute("news", news);
         return "editnews";
@@ -60,18 +63,21 @@ public class NewsController {
 
     @PostMapping("/editnews/{id}")
     public String editNews(@PathVariable Integer id, @ModelAttribute News news) {
+
         newsService.updateNews(id, news);
         return "redirect:/news";
     }
 
     @PostMapping("/delete/{id}")
     public String deleteNewsById(@PathVariable Integer id) {
+
         newsService.deleteNews(id);
         return "redirect:/news";
     }
 
     @PostMapping("/{newsId}/comment")
     public String addComment(@PathVariable Integer newsId, @RequestParam String text) {
+
         commentsService.save(newsId, text);
         return "redirect:/news";
     }

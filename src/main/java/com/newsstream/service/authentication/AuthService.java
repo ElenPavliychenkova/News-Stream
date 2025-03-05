@@ -5,7 +5,7 @@ import com.newsstream.model.entity.user.Role;
 import com.newsstream.model.entity.user.User;
 import com.newsstream.model.requests.AuthenticationRequest;
 import com.newsstream.model.requests.RegistrationRequest;
-import com.newsstream.repositories.user.IUserRepositoryJpa;
+import com.newsstream.repositories.user.IUserRepository;
 import com.newsstream.service.role.IRoleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ import java.util.List;
 public class AuthService implements IAuthService {
 
 
-    private final IUserRepositoryJpa userRepository;
+    private final IUserRepository userRepository;
 
 
     private final IRoleService roleService;
@@ -61,4 +61,5 @@ public class AuthService implements IAuthService {
     public List<Role> getAllRolesNames() {
         return roleService.findAllRoles();
     }
+
 }

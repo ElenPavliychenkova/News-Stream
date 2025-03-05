@@ -1,9 +1,6 @@
 package com.newsstream.model.entity.user;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
@@ -19,15 +16,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotNull
-    @Size(min = 3, max = 20)
+    @Column
     private String username;
 
-    @NotNull
-    @Size(min = 8)
+    @Column
     private String password;
 
-    @Email
+    @Column
     private String email;
 
     @ManyToOne(fetch = FetchType.LAZY)
