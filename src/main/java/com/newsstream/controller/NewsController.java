@@ -1,19 +1,16 @@
 package com.newsstream.controller;
 
 import com.newsstream.model.entity.news.News;
-import com.newsstream.model.entity.user.User;
 import com.newsstream.model.requests.CreateNewsRequest;
 import com.newsstream.service.comments.ICommentsService;
 import com.newsstream.service.news.INewsService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @Controller
@@ -25,12 +22,19 @@ public class NewsController {
     private final ICommentsService commentsService;
 
     @GetMapping
-    public String newsPage(Model model, @RequestParam(name = "show_comment_news_id", required = false) Integer showCommentNewsId) {
+    public String newsPage(Model model,
+                           @RequestParam(name = "show_comment_news_id", required = false) Integer showCommentNewsId,
+                           @RequestParam(name = "page", defaultValue = "0") int page,
+                           @RequestParam(name = "size", defaultValue = "5") int size) {
 
-        List<News> news = newsService.getAll();
-        model.addAttribute("newsList", news);
+        Page<News> newsPage = newsService.getAllPageable(page, size);
+
+        model.addAttribute("newsList", newsPage.getContent());
         model.addAttribute("show_comment_news_id", showCommentNewsId);
-        log.info("render news page with {}", showCommentNewsId);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("isLastPage", newsPage.isLast());
+
+        log.info("Render news page with show_comment_news_id={}, page={}, size={}", showCommentNewsId, page, size);
         return "news";
     }
 
@@ -42,18 +46,8 @@ public class NewsController {
 
     @PostMapping(
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public String addNews(@ModelAttribute CreateNewsRequest createNewsRequest, HttpServletRequest request) {
-
-        log.info("Save new news from request {}", request);
-        User user = (User) request.getSession().getAttribute("user");
-        log.info("Author = {}", user);
-
-        News news = new News();
-        news.setTitle(createNewsRequest.getTitle());
-        news.setBrief(createNewsRequest.getBrief());
-        news.setText(createNewsRequest.getText());
-        news.setAuthor(user);
-        newsService.save(news);
+    public String addNews(@ModelAttribute CreateNewsRequest createNewsRequest) {
+        newsService.save(createNewsRequest);
         return "redirect:/news";
     }
 

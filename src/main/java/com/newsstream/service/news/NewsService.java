@@ -3,12 +3,15 @@ package com.newsstream.service.news;
 import com.newsstream.exception.PermissionDeniedException;
 import com.newsstream.model.entity.news.News;
 import com.newsstream.model.entity.user.User;
-import com.newsstream.repositories.comments.ICommentsRepository;
+import com.newsstream.model.requests.CreateNewsRequest;
 import com.newsstream.repositories.news.INewsRepository;
 import com.newsstream.utils.AuthUtils;
+import io.micrometer.common.util.StringUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,7 +24,6 @@ public class NewsService implements INewsService {
 
 
     private final INewsRepository iNewsRepository;
-    private final ICommentsRepository iCommentsRepository;
 
 
     @Override
@@ -30,8 +32,24 @@ public class NewsService implements INewsService {
     }
 
     @Override
+    public Page<News> getAllPageable(Integer page, Integer size) {
+
+        PageRequest pageable = PageRequest.of(page, size);
+        return iNewsRepository.findAll(pageable);
+    }
+
+    @Override
     @Transactional
-    public void save(News news) {
+    public void save(CreateNewsRequest createNewsRequest) {
+
+        User user = AuthUtils.getUser();
+
+        News news = new News();
+        news.setTitle(createNewsRequest.getTitle());
+        news.setBrief(createNewsRequest.getBrief());
+        news.setText(createNewsRequest.getText());
+        news.setAuthor(user);
+
         iNewsRepository.save(news);
     }
 
@@ -39,17 +57,18 @@ public class NewsService implements INewsService {
     @Override
     @Transactional
     public News updateNews(Integer id, News updatedNews) {
+
         Optional<News> newsOptional = iNewsRepository.findById(id);
         if (newsOptional.isPresent()) {
             News existingNews = newsOptional.get();
 
-            if (updatedNews.getTitle() != null) {
+            if (!StringUtils.isBlank(updatedNews.getTitle())) {
                 existingNews.setTitle(updatedNews.getTitle());
             }
-            if (updatedNews.getBrief() != null) {
+            if (!StringUtils.isBlank(updatedNews.getBrief())) {
                 existingNews.setBrief(updatedNews.getBrief());
             }
-            if (updatedNews.getText() != null) {
+            if (!StringUtils.isBlank(updatedNews.getText())) {
                 existingNews.setText(updatedNews.getText());
             }
 
@@ -81,10 +100,4 @@ public class NewsService implements INewsService {
         return iNewsRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("News not found with id" + id));
     }
-
-
-   // public Page<News> getNews(int page, int pageSize) {
-       // Pageable pageable = PageRequest.of(page, pageSize);
-       // return iNewsRepository.findAll(pageable);
-  //  }
 }

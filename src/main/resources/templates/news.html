@@ -221,8 +221,36 @@
         footer a:hover {
             opacity: 0.8;
         }
+
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 10px;
+        }
+
+        .pagination button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #ff69b4;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .pagination button:hover {
+            background-color: #ff1493;
+        }
+
+        .pagination button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
     </style>
 </head>
+
 <body>
 <div class="top-border">
     <div class="logo">News-Stream</div>
@@ -263,8 +291,9 @@
                         <small>Автор: <span th:text="${comment.author.username}">Имя автора</span></small>
                         <div th:if="${(session.user != null && session.user.id == comment.author.id) || session.role == 'ADMIN'}">
                             <form th:action="@{/comments/delete/{commentId}(commentId=${comment.id})}" method="post">
-                                <button type="submit">удОлить</button>
+                                <button type="submit">удалить</button>
                             </form>
+                            <a th:href="@{/comments/editcomment/{id}(id=${comment.id})}" class="edit-button">Редактировать</a>
                         </div>
                     </div>
                 </div>
@@ -282,6 +311,20 @@
                 <button type="submit">Комментарии</button>
             </form>
         </div>
+
+        <!-- Пагинация -->
+        <div class="pagination">
+            <form th:action="@{/news}" method="get">
+                <input type="hidden" name="page" th:value="${currentPage - 1}">
+                <button type="submit" th:disabled="${currentPage == 0}">Предыдущая страница</button>
+            </form>
+            <span>Страница [[${currentPage + 1}]]</span>
+            <form th:action="@{/news}" method="get">
+                <input type="hidden" name="page" th:value="${currentPage + 1}">
+                <button type="submit" th:disabled="${isLastPage}">Следующая страница</button>
+            </form>
+        </div>
+
         <a th:if="${session.user != null}" class="add-news-button" th:href="@{/news/add-news}">Добавить новость !!!</a>
     </div>
 
